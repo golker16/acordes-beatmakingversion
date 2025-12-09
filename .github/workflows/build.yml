@@ -28,20 +28,30 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Ensure grooves folder exists (repo may not track empty dirs)
+        shell: powershell
+        run: |
+          if (!(Test-Path ".\grooves")) { New-Item -ItemType Directory -Path ".\grooves" | Out-Null }
+          if (!(Test-Path ".\grooves\bass")) { New-Item -ItemType Directory -Path ".\grooves\bass" | Out-Null }
+          Write-Host "Grooves tree:"
+          Get-ChildItem -Recurse .\grooves -Force
+
       - name: Build (PyInstaller onedir)
         shell: powershell
         run: |
           $appAbs = (Resolve-Path ".\app.py").Path
+
           pyinstaller `
             --noconfirm `
+            --clean `
             --windowed `
             --onedir `
             --noupx `
             --collect-all PySide6 `
             --collect-all shiboken6 `
-            --add-data "genres;genres" `
             --add-data "grooves;grooves" `
             "$appAbs"
+
           Write-Host "Built files:"
           Get-ChildItem -Recurse .\dist
 
