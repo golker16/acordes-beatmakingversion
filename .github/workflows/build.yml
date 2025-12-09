@@ -1,0 +1,53 @@
+name: Build Windows EXE (onedir)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        shell: powershell
+        run: |
+          python -m pip install --upgrade pip wheel setuptools
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build (PyInstaller onedir)
+        shell: powershell
+        run: |
+          $appAbs = (Resolve-Path ".\app.py").Path
+          pyinstaller `
+            --noconfirm `
+            --windowed `
+            --onedir `
+            --noupx `
+            --collect-all PySide6 `
+            --collect-all shiboken6 `
+            --add-data "genres;genres" `
+            --add-data "grooves;grooves" `
+            "$appAbs"
+          Write-Host "Built files:"
+          Get-ChildItem -Recurse .\dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
