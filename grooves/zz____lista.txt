@@ -1,0 +1,11 @@
+
+*bedroom pop*
+
+
+
+   *bass*
+bp_90_kit_moonsong_bass_electric_loop_Gmaj
+bp_120_bass_electric_loop_panda_Dmaj
+NH_SBSL_85_bass_electric_buttercup
+NH_SBSL_120_bass_electric_backseat_Dmin
+NH_SBSL_129_bass_electric_pasadena_chorus_Gmaj
